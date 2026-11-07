@@ -21,13 +21,13 @@ const site = lerSite(SITE);
 const PERFIL = {
   nome: ['Luiz Felipe', 'Alves'],
   funcao: 'Analista de Teste · Engenharia de Sistemas na UFMG',
-  bio: 'Há quase quatro anos testo e automatizo sistemas web e APIs. Também desenvolvo: do app ao sistema web, cada projeto já nasce pensado pra não quebrar.',
+  bio: 'Meu trabalho é desconfiar do sistema. Há quase quatro anos testo e automatizo web e APIs, e levo esse olhar pra tudo que eu desenvolvo.',
   temas: ['Qualidade de software', 'Testes automatizados', 'Sistemas web', 'Apps', 'Automações'],
   qualidades: [
     {
-      icone: 'i-burst', rotulo: 'Qualidade', titulo: 'Olhar de quem testa',
-      texto: 'Quase quatro anos testando sistemas web e APIs, na Sinqia, na TOTVS e hoje na Base2. Acho o problema antes de ele chegar em quem usa.',
-      itens: ['Testes de sistemas web e de APIs', 'Quality Engineer, Analista de Qualidade e de Teste', 'Certificação ISTQB CTFL']
+      icone: 'i-burst', rotulo: 'Investigação', titulo: 'Acho a causa,\nnão só o sintoma',
+      texto: 'Reproduzo, isolo e descrevo o problema de um jeito que o time consegue corrigir de primeira.',
+      itens: ['QA na Sinqia, na TOTVS e na Base2', 'Testes de sistemas web e de APIs', 'Certificação ISTQB CTFL']
     },
     {
       icone: 'i-atom', rotulo: 'Automação', titulo: 'Teste que roda sozinho',
@@ -165,7 +165,7 @@ function apresentacao(G) {
 
 // ------------------------------------------------------------------ 2. qualidades: cartões como os de serviços do site
 function qualidades(G, y0) {
-  const cab = cabeca(G, y0, 'QUALIDADES', 'O que eu faço bem', 'Teste, automação e desenvolvimento, com base de engenharia.');
+  const cab = cabeca(G, y0, 'QUALIDADES', 'Pontos fortes', 'Teste, automação e desenvolvimento, com base de engenharia.');
   let c = cab.s;
   const GAP = 40;
   const CW = (LARG - GAP) / 2;
@@ -173,7 +173,8 @@ function qualidades(G, y0) {
   const TW = CW - 2 * PAD;
   // mede cada cartão para os dois de uma linha terem a mesma altura
   const montar = (q, i) => {
-    const t = quebrar(FONTE.titulo, q.titulo.toUpperCase(), 24, TW, -0.01);
+    // \n no título marca onde a linha deve quebrar
+    const t = [].concat(...q.titulo.toUpperCase().split('\n').map((l) => quebrar(FONTE.titulo, l, 24, TW, -0.01)));
     const p = quebrar(FONTE.corpo, q.texto, 17, TW);
     const itens = q.itens.map((it) => quebrar(FONTE.corpo, it, 16.5, TW - 28));
     const h = PAD + 64 + 18 + t.length * 28 + 14 + p.length * 26 + 18 + 16 + itens.reduce((a, l) => a + l.length * 25 + 10, -10) + PAD;
@@ -283,7 +284,7 @@ function trajetoria(G, y0) {
   return { s: c, fim: y + f.h + 60 };
 }
 
-// ------------------------------------------------------------------ 5. rodapé: assinatura, o serviço bem discreto e a vaquinha
+// ------------------------------------------------------------------ 5. rodapé: assinatura "LF.", o © e a vaquinha
 // (sem chamada de contato: o perfil mostra quem eu sou e o que já fiz, não é procura de emprego)
 function rodape(G, y0) {
   let c = '';
@@ -292,8 +293,6 @@ function rodape(G, y0) {
   const tam = 40;
   const wa = medir(FONTE.titulo, ass, tam, -0.01);
   const ax = BW / 2 - (wa + medir(FONTE.titulo, '.', tam)) / 2;
-  c += '<g transform="translate(' + num(ax - 26) + ' ' + num(yf - 30) + ')"><path d="M8 66C40 74 96 72 124 46C132 38 134 24 128 18" fill="none" stroke="' + AZUL + '" stroke-width="3" stroke-linecap="round" opacity=".75"/>' +
-    '<circle cx="128" cy="18" r="9" fill="' + AZUL + '" opacity=".25"/><circle cx="128" cy="18" r="4" fill="' + AZUL + '"/></g>';
   c += G.texto(FONTE.titulo, ass, ax, yf + 22, tam, -0.01, 'fill="' + AZUL + '"') + G.texto(FONTE.titulo, '.', ax + wa, yf + 22, tam, 0, 'fill="' + LARANJA + '"');
   // o site dos serviços não entra aqui: dentro de uma imagem ele não seria clicável, então ele fica logo abaixo,
   // no README, como link de verdade
@@ -355,7 +354,7 @@ function pagina() {
 
 function descricao() {
   return 'Portfólio de ' + PERFIL.nome.join(' ') + ', ' + PERFIL.funcao + '. ' + PERFIL.bio +
-    ' Qualidades: ' + PERFIL.qualidades.map((q) => q.titulo).join('; ') + '.' +
+    ' Pontos fortes: ' + PERFIL.qualidades.map((q) => q.titulo.replace(/\n/g, ' ')).join('; ') + '.' +
     ' Projetos: ' + site.PROJETOS.map((p) => p.nome).join(', ') + ', numa galáxia que uma nave percorre.' +
     ' Trajetória: ' + PERFIL.trajetoria.map((it) => it.ano + ', ' + it.titulo + ', ' + it.onde).join('; ') + '.';
 }
