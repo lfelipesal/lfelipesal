@@ -1,7 +1,7 @@
 /* Gera o perfil do GitHub como uma página contínua e animada (um "PDF animado"), com a cara do site:
      img/portfolio.svg   apresentação, qualidades, o que já fiz (galáxia com o passeio da nave),
                          trajetória e um rodapé discreto, separados pelas faixas líquidas do site
-     README.md           a página e, embaixo, só o contato e o site dos serviços
+     README.md           a página (sem link) e, embaixo, os únicos links: o contato e o site dos serviços
    Os sóis, projetos, planetas, prévias de tela e enfeites vêm do site (orbit.js, index.html e img/).
    Uso, dentro desta pasta: npm i  e depois  node gerar.js [pasta-do-perfil] [pasta-do-site]
    Sem argumentos, grava na pasta de cima e lê o site em ../../saltech.
@@ -295,12 +295,9 @@ function rodape(G, y0) {
   c += '<g transform="translate(' + num(ax - 26) + ' ' + num(yf - 30) + ')"><path d="M8 66C40 74 96 72 124 46C132 38 134 24 128 18" fill="none" stroke="' + AZUL + '" stroke-width="3" stroke-linecap="round" opacity=".75"/>' +
     '<circle cx="128" cy="18" r="9" fill="' + AZUL + '" opacity=".25"/><circle cx="128" cy="18" r="4" fill="' + AZUL + '"/></g>';
   c += G.texto(FONTE.titulo, ass, ax, yf + 22, tam, -0.01, 'fill="' + AZUL + '"') + G.texto(FONTE.titulo, '.', ax + wa, yf + 22, tam, 0, 'fill="' + LARANJA + '"');
-  yf += 64;
-  const serv = PERFIL.servicos.texto + ' · ';
-  const ws = medir(FONTE.corpo, serv + PERFIL.servicos.site, 14);
-  c += G.texto(FONTE.corpo, serv, BW / 2 - ws / 2, yf, 14, 0, 'fill="' + SUAVE + '"') +
-    G.texto(FONTE.corpo, PERFIL.servicos.site, BW / 2 - ws / 2 + medir(FONTE.corpo, serv, 14), yf, 14, 0, 'fill="' + AZUL + '" text-decoration="underline"');
-  yf += 30;
+  // o site dos serviços não entra aqui: dentro de uma imagem ele não seria clicável, então ele fica logo abaixo,
+  // no README, como link de verdade
+  yf += 58;
   c += G.centro(FONTE.mono, '© 2026 ' + PERFIL.nome.join(' ').toUpperCase(), BW / 2, yf, 12.5, 0.12, 'fill="' + AZUL + '"');
   const fim = yf + 52;
   // a vaquinha do rodapé do site, pastando em cima da moldura
@@ -366,7 +363,9 @@ function descricao() {
 function readme() {
   const alt = descricao().replace(/"/g, '&quot;');
   const contatos = PERFIL.contatos.filter((c) => c[0] !== 'GitHub').map((c) => '<a href="' + c[2] + '">' + c[0] + '</a>').join(' · ');
-  return '<img src="img/portfolio.svg" width="100%" alt="' + alt + '">\n\n' +
+  // dentro de <picture> o GitHub não põe o link automático que abriria o arquivo da imagem no repositório,
+  // então a página animada não é clicável; os links de verdade ficam embaixo
+  return '<picture><img src="img/portfolio.svg" width="100%" alt="' + alt + '"></picture>\n\n' +
     '<p align="center">' + contatos + '<br><sub>' + PERFIL.servicos.texto + ': <a href="' + PERFIL.servicos.url + '">' + PERFIL.servicos.site + '</a></sub></p>\n';
 }
 

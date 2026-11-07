@@ -581,19 +581,16 @@ function montarPasseio(G, site, layout) {
   const sisEm = (t) => { let s = -1; R.sisVis.forEach((x) => { if (t >= x.t) s = x.s; }); return s; };
   let topo = '<g opacity="0" display="none">' + ligado(topoOp, (v) => v[0] > 0) + animar('opacity', topoOp, L, (v) => num(v[0], 2), 0.01);
   const tv = layout.topoTam;
-  const back = '← GALÁXIA';
+  // só o nome do sistema: o "← Galáxia" do site é um botão, e numa imagem nada é clicável
   R.sistemas.forEach(function (s) {
     const cor = site.SISTEMAS[s].braco ? LARANJA : AZUL;
-    const wb = medir(FONTE.monoN, back, tv, 0.06) + 2 * 10;
     const nome = site.SISTEMAS[s].nome.toUpperCase();
     const wn = medir(FONTE.monoN, nome, tv, 0.06) + 2 * 10;
     const h = tv * 1.5 + 10 + 3;
     const yb = h / 2 + altCaixa(FONTE.monoN, tv) / 2;
     topo += '<g display="none">' + discreto('display', quadro.map((q) => ({ t: q.t, v: sisEm(q.t) === s ? 'inline' : 'none' })), L) +
-      '<rect x=".75" y=".75" width="' + num(wb - 1.5) + '" height="' + num(h - 1.5) + '" fill="' + CREME + '" stroke="' + cor + '" stroke-width="1.5"/>' +
-      G.texto(FONTE.monoN, back, 10, yb, tv, 0.06, 'fill="' + cor + '"') +
-      '<path d="M' + num(wb) + ' .75H' + num(wb + wn - 0.75) + 'V' + num(h - 0.75) + 'H' + num(wb) + '" fill="' + CREME + '" stroke="' + cor + '" stroke-width="1.5"/>' +
-      G.texto(FONTE.monoN, nome, wb + 10, yb, tv, 0.06, 'fill="' + cor + '"') + '</g>';
+      '<rect x=".75" y=".75" width="' + num(wn - 1.5) + '" height="' + num(h - 1.5) + '" fill="' + CREME + '" stroke="' + cor + '" stroke-width="1.5"/>' +
+      G.texto(FONTE.monoN, nome, 10, yb, tv, 0.06, 'fill="' + cor + '"') + '</g>';
   });
   topo += '</g>';
 

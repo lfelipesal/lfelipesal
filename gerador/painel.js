@@ -128,12 +128,12 @@ function painelMapa(G, site, altura) {
   y += 8;
   const fim = Math.max(y + 60, (altura || 0) - PAD_Y - 40);
   s += '<path d="M' + PAD_X + ' ' + num(fim) + 'H' + (PW - PAD_X) + '" stroke="' + AZUL + '" stroke-width="1.5" stroke-dasharray="4 4"/>';
-  const txt = 'A NAVE JÁ VAI SAIR →';
-  const bw = medir(FONTE.monoN, txt, 12, 0.08) + 2 * 18;
-  const bx = PW - PAD_X - bw;
+  // só um aviso em texto, sem cara de botão: numa imagem nada é clicável
+  const txt = 'A NAVE JÁ VAI SAIR';
+  const tw = medir(FONTE.mono, txt, 12, 0.12);
   const by = fim + 14;
-  s += '<rect x="' + num(bx + 4) + '" y="' + num(by + 4) + '" width="' + num(bw) + '" height="32" fill="' + '#142A9E' + '"/><rect x="' + num(bx) + '" y="' + num(by) + '" width="' + num(bw) + '" height="32" fill="' + AZUL + '"/>' +
-    G.texto(FONTE.monoN, txt, bx + 18, by + 16 + altCaixa(FONTE.monoN, 12) / 2, 12, 0.08, 'fill="' + CREME + '"');
+  s += G.texto(FONTE.mono, txt, PW - PAD_X - tw, by + 20, 12, 0.12, 'fill="' + AZUL + '"') +
+    '<path fill="' + LARANJA + '" transform="translate(' + num(PW - PAD_X - tw - 22) + ' ' + num(by + 8) + ') scale(.8)" d="M7.5 0 9 6 15 7.5 9 9 7.5 15 6 9 0 7.5 6 6Z"/>';
   return { s: s, h: Math.max(by + 32 + PAD_Y, altura || 0), cor: AZUL };
 }
 
