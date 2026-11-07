@@ -1,9 +1,9 @@
 {
-  "name": "gerador-banner-perfil",
+  "name": "gerador-perfil",
   "private": true,
-  "description": "Gera o banner animado do perfil com a galáxia do site da SAL.TECH",
+  "description": "Gera o perfil do GitHub (imagens animadas e README) a partir do site da SAL.TECH",
   "scripts": {
-    "gerar": "node gerar-banner.js"
+    "gerar": "node gerar.js"
   },
   "dependencies": {
     "opentype.js": "2.0.0"
