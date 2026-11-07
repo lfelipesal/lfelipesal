@@ -313,18 +313,9 @@ function montarPasseio(G, site, layout) {
   const ligado = (kf, f) => discreto('display', kf.map((q) => ({ t: q.t, v: f(q.v) ? 'inline' : 'none' })), L);
 
   let defs = '';
-  // o sol de cada sistema: disco com as iniciais LF e o ponto, na cor do braço
-  function logoSol(id, cor, ponto) {
-    const tam = 40;
-    const w = medir(FONTE.titulo, 'LF.', tam, -0.01);
-    const x = 50 - w / 2;
-    const y = 50 + altCaixa(FONTE.titulo, tam) / 2;
-    const wLF = medir(FONTE.titulo, 'LF', tam, -0.01) - 0.01 * tam;
-    return '<symbol id="' + id + '" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46.5" fill="' + CREME + '" stroke="' + cor + '" stroke-width="5"/>' +
-      G.texto(FONTE.titulo, 'LF', x, y, tam, -0.01, 'fill="' + cor + '"') + G.texto(FONTE.titulo, '.', x + wLF, y, tam, 0, 'fill="' + ponto + '"') + '</symbol>';
-  }
-  defs += logoSol('lf-azul', AZUL, LARANJA) + logoSol('lf-laranja', LARANJA, AZUL);
-  const jaTem = new Set();
+  // o sol de cada sistema é o planeta do site, azul ou laranja conforme o braço da galáxia
+  defs += site.simbolo('planeta-st.svg', 'sol-azul') + site.simbolo('planeta-st-laranja.svg', 'sol-laranja');
+  const jaTem = layout.jaTem || new Set();
   defs += site.definicoes('href="#i-burst" url(#pt-checker) url(#pt-checker-warm) url(#pt-stripes) url(#clip-planet) href="#i-globe" href="#i-sparkle"', jaTem);
   site.PROJETOS.forEach((p) => { defs += site.definicoes((site.PLANETAS[p.planeta] || '') + site.previa(p), jaTem); });
 
@@ -341,7 +332,7 @@ function montarPasseio(G, site, layout) {
     solOpac[s] = animar('opacity', cam.map((q) => ({ t: q.t, v: [q.v.sis === s ? 1 - faixa(q.v.e, 0.72, 0.98) : 1 - faixa(q.v.e, 0, 0.3)] })), L, V, 0.005);
   });
   const tagOpac = animar('opacity', cam.map((q) => ({ t: q.t, v: [1 - faixa(q.v.e, 0, 0.18)] })), L, V, 0.005);
-  const gal = GX.galaxia(G, site, { periodo: L / Math.max(1, Math.round((0.00009 * L) / DOIS_PI)), cam: [camT, camS], solOpac: solOpac, tagOpac: tagOpac, logo: (s) => (s.braco ? 'lf-laranja' : 'lf-azul') });
+  const gal = GX.galaxia(G, site, { periodo: L / Math.max(1, Math.round((0.00009 * L) / DOIS_PI)), cam: [camT, camS], solOpac: solOpac, tagOpac: tagOpac, logo: (s) => (s.braco ? 'sol-laranja' : 'sol-azul') });
   defs += gal.defs;
   const galOpac = animar('opacity', quadro.map((q, i) => ({ t: q.t, v: [vis(q.seg) ? 1 - faixa(cam[i].v.e, 0.62, 0.96) : 0] })), L, V, 0.005);
   const galVis = discreto('display', quadro.map((q) => ({ t: q.t, v: vis(q.seg) ? 'inline' : 'none' })), L);
@@ -467,7 +458,7 @@ function montarPasseio(G, site, layout) {
       frente += '<g display="none">' + visCopia(true) + '<use href="#planeta' + k + '"/></g>';
     });
     const sol = '<g transform="translate(' + CX + ' ' + CY + ')"><g><animateTransform attributeName="transform" type="rotate" values="-5;5;-5" dur="6s" repeatCount="indefinite" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1"/>' +
-      '<use href="#' + (quenteSis ? 'lf-laranja' : 'lf-azul') + '" x="' + num(-SOL_SIS / 2) + '" y="' + num(-SOL_SIS / 2) + '" width="' + num(SOL_SIS) + '" height="' + num(SOL_SIS) + '"/></g></g>';
+      '<use href="#' + (quenteSis ? 'sol-laranja' : 'sol-azul') + '" x="' + num(-SOL_SIS / 2) + '" y="' + num(-SOL_SIS / 2) + '" width="' + num(SOL_SIS) + '" height="' + num(SOL_SIS) + '"/></g></g>';
     camadaSis += '<g display="none">' + discreto('display', tr.map((q) => ({ t: q.t, v: q.v[7] ? 'inline' : 'none' })), L) +
       animar('opacity', tr.map((q) => ({ t: q.t, v: [q.v[6]] })), L, V, 0.005) +
       '<g>' + transformar('translate', tr.map((q) => ({ t: q.t, v: [q.v[0], q.v[1]] })), L, V, 0.05) +

@@ -45,7 +45,14 @@ function lerSite(pasta) {
     ctx.tinta(quente(p) ? '#FF5A36' : '#1E3BD8', quente(p) ? 'pt-checker-warm' : 'pt-checker');
     return (ctx.PREVIAS[p.previa] || ctx.PREVIAS.web)();
   }
+  // um SVG da pasta img do site como <symbol>, para usar com <use>
+  function simbolo(arq, id) {
+    const s = fs.readFileSync(path.join(pasta, 'img', arq), 'utf8');
+    const vb = s.match(/viewBox="([^"]+)"/)[1];
+    return '<symbol id="' + id + '" viewBox="' + vb + '">' + s.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '') + '</symbol>';
+  }
   return {
+    simbolo: simbolo,
     SISTEMAS: ctx.SISTEMAS,
     PROJETOS: ctx.PROJETOS,
     PLANETAS: ctx.PLANETAS,

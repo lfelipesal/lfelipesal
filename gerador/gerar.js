@@ -1,11 +1,11 @@
-/* Gera o perfil do GitHub a partir do site da SAL.TECH (orbit.js e index.html):
-     img/apresentacao.svg  quem eu sou, no estilo da abertura do site
-     img/passeio.svg       a galáxia de projetos com o passeio da nave e o painel de cada projeto
-     img/trajetoria.svg    estudos e carreira, ferramentas e certificações
-     README.md             as três imagens, os links dos projetos, os testes automatizados e os contatos
+/* Gera o perfil do GitHub como uma página contínua e animada (um "PDF animado"), com a cara do site:
+     img/portfolio.svg   apresentação, qualidades, o que já fiz (galáxia com o passeio da nave),
+                         trajetória e contato, separados pelas faixas líquidas do site
+     README.md           a página e, embaixo, só o contato e o site dos serviços
+   Os sóis, projetos, planetas, prévias de tela e enfeites vêm do site (orbit.js, index.html e img/).
    Uso, dentro desta pasta: npm i  e depois  node gerar.js [pasta-do-perfil] [pasta-do-site]
    Sem argumentos, grava na pasta de cima e lê o site em ../../saltech.
-   Precisa do Python com fontTools (python -m pip install fonttools) para embutir as fontes nas imagens. */
+   Precisa do Python com fontTools (python -m pip install fonttools) para embutir as fontes na imagem. */
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -17,64 +17,75 @@ const PERFIL_DIR = process.argv[2] || path.join(__dirname, '..');
 const SITE = process.argv[3] || path.join(__dirname, '..', '..', 'saltech');
 const site = lerSite(SITE);
 
-// ------------------------------------------------------------------ quem eu sou (do painel "quem pilota" do site)
+// ------------------------------------------------------------------ quem eu sou
 const PERFIL = {
   nome: ['Luiz Felipe', 'Alves'],
-  funcao: 'Analista de testes e desenvolvedor · Engenharia de Sistemas na UFMG',
-  bio: 'Há quase quatro anos testo e automatizo sistemas web e APIs. Hoje uso esse olhar pra construir: cada sistema já nasce pensado pra não quebrar.',
+  funcao: 'Analista de Teste · Engenharia de Sistemas na UFMG',
+  bio: 'Há quase quatro anos testo e automatizo sistemas web e APIs. Também desenvolvo: do app ao sistema web, cada projeto já nasce pensado pra não quebrar.',
   temas: ['Qualidade de software', 'Testes automatizados', 'Sistemas web', 'Apps', 'Automações'],
+  qualidades: [
+    {
+      icone: 'i-burst', rotulo: 'Qualidade', titulo: 'Olhar de quem testa',
+      texto: 'Quase quatro anos testando sistemas web e APIs, na Sinqia, na TOTVS e hoje na Base2. Acho o problema antes de ele chegar em quem usa.',
+      itens: ['Testes de sistemas web e de APIs', 'Quality Engineer, Analista de Qualidade e de Teste', 'Certificação ISTQB CTFL']
+    },
+    {
+      icone: 'i-atom', rotulo: 'Automação', titulo: 'Teste que roda sozinho',
+      texto: 'Transformo o que se repete em teste automatizado, pra cada entrega sair com mais confiança e menos retrabalho.',
+      itens: ['Interface com Cypress e Selenium', 'API com RestAssured e JUnit', 'JavaScript, TypeScript, Java e Python']
+    },
+    {
+      icone: 'i-globe', rotulo: 'Desenvolvimento', titulo: 'Do app ao sistema web',
+      texto: 'Também construo: app mobile, sistema web, automação com IA e até jogo, sempre com o olhar de quem testa.',
+      itens: ['React Native e Next.js', 'PostgreSQL e SQL', 'Web Full Stack pelo curso.dev']
+    },
+    {
+      icone: 'i-orbit', rotulo: 'Engenharia', titulo: 'Base de engenharia',
+      texto: 'Engenharia de Sistemas na UFMG e técnico em Eletrônica no CEFET-MG: lógica, modelagem e otimização no dia a dia.',
+      itens: ['Otimização com Python e Gurobi', 'C/C++ e estruturas de dados', 'Eletrônica e sistemas digitais']
+    }
+  ],
   trajetoria: [
     { ano: '2017', tipo: 'estudos', titulo: 'Técnico em Eletrônica', onde: 'CEFET-MG' },
     { ano: '2021', tipo: 'estudos', titulo: 'Engenharia de Sistemas', onde: 'UFMG' },
     { ano: '2022', tipo: 'carreira', titulo: 'Quality Engineer', onde: 'Sinqia' },
     { ano: '2025', tipo: 'carreira', titulo: 'Analista de Qualidade', onde: 'TOTVS' },
-    { ano: '2025', tipo: 'carreira', titulo: 'Analista de Teste Pleno', onde: 'Base2, até hoje' },
-    { ano: 'Hoje', tipo: 'carreira', titulo: 'Fundador', onde: 'SAL.TECH', hoje: true }
+    { ano: 'Hoje', tipo: 'carreira', titulo: 'Analista de Teste Pleno', onde: 'Base2', hoje: true }
   ],
-  ferramentas: ['JavaScript', 'TypeScript', 'C/C++', 'Python', 'Cypress', 'Selenium', 'Git', 'Figma', 'SQL', 'Scrum'],
+  ferramentas: ['JavaScript', 'TypeScript', 'C/C++', 'Python', 'Java', 'Cypress', 'Selenium', 'Git', 'Figma', 'SQL', 'Scrum'],
   certificacoes: ['ISTQB CTFL', 'Web Full Stack · curso.dev'],
-  // repositórios públicos de cada projeto do site (o que não está aqui aponta para a galáxia do site)
-  codigo: { 'R-Type': 'https://github.com/lfelipesal/R-type', 'Gestão de portfólios': 'https://github.com/lfelipesal/Pesquisa_Operacional_UFMG' },
-  testes: [
-    ['TesteAPI_JavaRestAssured', 'testes da API Petstore com Java, RestAssured e JUnit'],
-    ['testAut-Cypress', 'teste de interface com Cypress numa loja online, do carrinho até antes de fechar a compra'],
-    ['Teste_Wisely', 'testes automatizados do projeto Wisely, em Java']
-  ],
-  contatos: [['LinkedIn', 'https://www.linkedin.com/in/lfelipesal'], ['salltech.com.br', 'https://www.salltech.com.br']]
+  contatos: [['LinkedIn', 'linkedin.com/in/lfelipesal', 'https://www.linkedin.com/in/lfelipesal'], ['GitHub', 'github.com/lfelipesal', 'https://github.com/lfelipesal']],
+  servicos: { texto: 'Também faço sites, sistemas e automações sob medida', site: 'salltech.com.br', url: 'https://www.salltech.com.br' },
+  // textos do site que falam do próprio site e não fazem sentido fora dele
+  resumos: { 'R-Type': 'Jogo de nave inspirado no clássico de fliperama de 1987: rolagem lateral, inimigos, canhão que carrega a força e placar de recordes. Feito em C e refeito em JavaScript pra jogar no navegador.' }
 };
+site.PROJETOS.forEach((p) => { if (PERFIL.resumos[p.nome]) p.resumo = PERFIL.resumos[p.nome]; });
 
 const AZUL = '#1E3BD8';
+const FUNDO = '#142A9E';
 const LARANJA = '#FF5A36';
 const CREME = '#F4ECD6';
+const PAPEL2 = '#EDE3C6';
 const SUAVE = '#3A4CA8';
 const BW = 1280;
-const M = 14;
+const M = 14; // moldura da página
+const X = 60; // margem do conteúdo
+const LARG = BW - 2 * X;
 const BRILHO = 'M50 0C54 38 62 46 100 50C62 54 54 62 50 100C46 62 38 54 0 50C38 46 46 38 50 0Z';
+const ESTRELA4 = 'M7.5 0 9 6 15 7.5 9 9 7.5 15 6 9 0 7.5 6 6Z'; // o marcador dos itens das listas do site
+const CORPO_NAVE = 'M9 5h4l4-5h4l-2 6h9c6 0 11 3 14 6-3 3-8 6-14 6h-9l2 6h-4l-4-5H9z';
 
-function documento(G, h, titulo, defs, corpo) {
-  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + BW + ' ' + num(h) + '" width="' + BW + '" height="' + num(h) + '" role="img" aria-labelledby="t">' +
-    '<title id="t">' + titulo + '</title><defs>' + G.defs() + defs + '</defs>' + corpo + '</svg>';
+function sobrancelha(G, txt, x, y, cor) {
+  return '<path fill="' + (cor || AZUL) + '" transform="translate(' + x + ' ' + (y - 13) + ') scale(.16)" d="' + BRILHO + '"/>' +
+    G.texto(FONTE.mono, txt, x + 26, y, 13, 0.14, 'fill="' + (cor || AZUL) + '"');
 }
-// moldura de pôster com a etiqueta no topo, como a página do site
-function moldura(G, h, etiqueta) {
-  const tam = 13;
-  const esp = 0.14;
-  const tw = medir(FONTE.mono, etiqueta, tam, esp);
-  const bw = tw + 48;
-  const x = BW / 2 - bw / 2;
-  return '<rect width="' + BW + '" height="' + num(h) + '" rx="18" fill="' + CREME + '"/>' +
-    '<rect x="' + M + '" y="' + M + '" width="' + (BW - 2 * M) + '" height="' + num(h - 2 * M) + '" fill="none" stroke="' + AZUL + '" stroke-width="2"/>' +
-    '<path d="M' + num(x) + ' ' + M + 'V' + (M + 36) + 'H' + num(x + bw) + 'V' + M + '" fill="' + CREME + '" stroke="' + AZUL + '" stroke-width="2"/>' +
-    G.texto(FONTE.mono, etiqueta, BW / 2 - tw / 2, M + 18 + 4.6, tam, esp, 'fill="' + AZUL + '"');
+// cabeça de seção do site: sobrancelha, título e linha de apoio; devolve onde ela termina
+function cabeca(G, y0, sobre, titulo, apoio) {
+  let s = sobrancelha(G, sobre, X, y0 + 70);
+  s += G.texto(FONTE.titulo, titulo.toUpperCase(), X, y0 + 126, 44, -0.01, 'fill="' + AZUL + '"');
+  if (apoio) s += G.texto(FONTE.corpo, apoio, X, y0 + 164, 19, 0, 'fill="' + SUAVE + '"');
+  return { s: s, fim: y0 + (apoio ? 190 : 150) };
 }
-function sobrancelha(G, txt, x, y) {
-  return '<path fill="' + AZUL + '" transform="translate(' + x + ' ' + (y - 13) + ') scale(.16)" d="' + BRILHO + '"/>' +
-    G.texto(FONTE.mono, txt, x + 26, y, 13, 0.14, 'fill="' + AZUL + '"');
-}
-function titulo2(G, txt, x, y, tam) {
-  return G.texto(FONTE.titulo, txt.toUpperCase(), x, y, tam, -0.01, 'fill="' + AZUL + '"');
-}
-// etiquetas em linha (como as do site), centradas em cx ou começando em x
 function etiquetas(G, lista, x, y, tam, opcoes) {
   const o = opcoes || {};
   const padX = o.padX || 14;
@@ -85,11 +96,11 @@ function etiquetas(G, lista, x, y, tam, opcoes) {
   let cx = o.centro ? x - total / 2 : x;
   let s = '';
   lista.forEach(function (t, i) {
-    s += '<rect x="' + num(cx + 0.75) + '" y="' + num(y + 0.75) + '" width="' + num(larg[i] - 1.5) + '" height="' + num(h - 1.5) + '" fill="' + (o.fundo || 'none') + '" stroke="' + (o.cor || AZUL) + '" stroke-width="1.5"/>' +
+    s += '<rect x="' + num(cx + 0.75) + '" y="' + num(y + 0.75) + '" width="' + num(larg[i] - 1.5) + '" height="' + num(h - 1.5) + '" fill="none" stroke="' + (o.cor || AZUL) + '" stroke-width="1.5"/>' +
       G.texto(FONTE.mono, t.toUpperCase(), cx + padX, y + h / 2 + altCaixa(FONTE.mono, tam) / 2, tam, 0.1, 'fill="' + (o.cor || AZUL) + '"');
     cx += larg[i] + gap;
   });
-  return { s: s, fim: cx - gap, h: h };
+  return { s: s, h: h };
 }
 // brilho que pisca como o .twinkle do site (2,8 s, de 70% a 100%, girando 45°)
 function brilho(cx, cy, tam, cor, atraso) {
@@ -99,23 +110,34 @@ function brilho(cx, cy, tam, cor, atraso) {
     '<animateTransform attributeName="transform" type="rotate" values="0;45;0" dur="2.8s" begin="' + atraso + 's" repeatCount="indefinite" calcMode="spline" keySplines="' + sp + '" additive="sum"/>' +
     '<path fill="' + cor + '" transform="scale(' + tam / 100 + ') translate(-50 -50)" d="' + BRILHO + '"/></g></g>';
 }
+const girar = (seg, rev) => '<animateTransform attributeName="transform" type="rotate" from="0" to="' + (rev ? -360 : 360) + '" dur="' + seg + 's" repeatCount="indefinite"/>';
+// órbita do herói do site: elipse inclinada com um ponto azul e um laranja
+function orbitaEnfeite(id, x, y, k) {
+  return '<g transform="translate(' + x + ' ' + y + ') scale(' + k + ')"><g transform="rotate(-8 80 35)"><path id="' + id + '" d="M4 35a76 28 0 1 0 152 0a76 28 0 1 0 -152 0" fill="none" stroke="' + AZUL + '" stroke-width="' + num(1.6 / k, 2) + '"/>' +
+    '<circle r="' + num(4.5 / k, 2) + '" fill="' + AZUL + '"><animateMotion dur="14s" repeatCount="indefinite"><mpath href="#' + id + '"/></animateMotion></circle>' +
+    '<circle r="' + num(4.5 / k, 2) + '" fill="' + LARANJA + '"><animateMotion dur="14s" begin="-7s" repeatCount="indefinite"><mpath href="#' + id + '"/></animateMotion></circle></g></g>';
+}
+// faixa líquida do site entre as seções, de borda a borda da moldura
+function faixa(n, y) {
+  const arq = fs.readFileSync(path.join(SITE, 'img', 'faixa-' + n + '.svg'), 'utf8');
+  const vb = arq.match(/viewBox="([^"]+)"/)[1];
+  const par = (arq.match(/preserveAspectRatio="([^"]+)"/) || [0, 'xMidYMid slice'])[1];
+  const miolo = arq.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+  const x0 = M + 1;
+  const w = BW - 2 * M - 2;
+  return '<svg x="' + x0 + '" y="' + y + '" width="' + w + '" height="120" viewBox="' + vb + '" preserveAspectRatio="' + par + '">' + miolo + '</svg>' +
+    '<path d="M' + M + ' ' + (y + 1) + 'H' + (BW - M) + 'M' + M + ' ' + (y + 119) + 'H' + (BW - M) + '" stroke="' + AZUL + '" stroke-width="2"/>';
+}
 
-// ------------------------------------------------------------------ apresentação: a abertura do site, com o meu nome
-function svgApresentacao() {
-  const G = new Glifos();
-  const H = 560;
+// ------------------------------------------------------------------ 1. apresentação: a abertura do site, com o meu nome
+function apresentacao(G) {
   const CXB = BW / 2;
-  let c = moldura(G, H, 'PORTFÓLIO');
-  // enfeites da abertura do site: globo e estrela girando devagar, átomo, brilhos e a órbita com dois pontos
-  const girar = (seg, rev) => '<animateTransform attributeName="transform" type="rotate" from="0" to="' + (rev ? -360 : 360) + '" dur="' + seg + 's" repeatCount="indefinite"/>';
+  let c = '';
   c += '<g transform="translate(130 160)" color="' + AZUL + '"><g>' + girar(40) + '<use href="#i-globe" x="-66" y="-66" width="132" height="132"/></g></g>';
   c += '<g transform="translate(1136 352)" color="' + AZUL + '"><g>' + girar(40, true) + '<use href="#i-burst" x="-48" y="-48" width="96" height="96"/></g></g>';
   c += '<g color="' + AZUL + '"><use href="#i-atom" x="104" y="392" width="96" height="96"/></g>';
   c += brilho(1140, 112, 62, AZUL, 0) + brilho(1188, 182, 30, LARANJA, -1.2);
-  c += '<g transform="translate(1072 456)"><g transform="rotate(-8 80 35)"><path id="orbita-heroi" d="M4 35a76 28 0 1 0 152 0a76 28 0 1 0 -152 0" fill="none" stroke="' + AZUL + '" stroke-width="1.6"/>' +
-    '<circle r="4.5" fill="' + AZUL + '"><animateMotion dur="14s" repeatCount="indefinite"><mpath href="#orbita-heroi"/></animateMotion></circle>' +
-    '<circle r="4.5" fill="' + LARANJA + '"><animateMotion dur="14s" begin="-7s" repeatCount="indefinite"><mpath href="#orbita-heroi"/></animateMotion></circle></g></g>';
-  // "Oi, eu sou o" entre dois brilhos
+  c += orbitaEnfeite('orbita-heroi', 1072, 456, 1);
   const oi = 'OI, EU SOU O';
   const wOi = medir(FONTE.mono, oi, 15, 0.22);
   c += G.centro(FONTE.mono, oi, CXB, 116, 15, 0.22, 'fill="' + AZUL + '"');
@@ -124,67 +146,96 @@ function svgApresentacao() {
   // nome em duas linhas, a segunda na caixa azul inclinada, com o ponto laranja
   const T = 86;
   const topo = 136;
-  const b1 = topo + 0.885 * T;
-  c += G.centro(FONTE.titulo, PERFIL.nome[0].toUpperCase(), CXB, b1, T, -0.01, 'fill="' + AZUL + '"');
+  c += G.centro(FONTE.titulo, PERFIL.nome[0].toUpperCase(), CXB, topo + 0.885 * T, T, -0.01, 'fill="' + AZUL + '"');
   const n2 = PERFIL.nome[1].toUpperCase();
-  const w2 = medir(FONTE.titulo, n2, T, -0.01);
   const pad = 0.18 * T;
-  const wPonto = medir(FONTE.titulo, '.', T);
-  const bw = w2 + 2 * pad;
-  const bx = CXB - (bw + wPonto) / 2;
+  const bw = medir(FONTE.titulo, n2, T, -0.01) + 2 * pad;
+  const bx = CXB - (bw + medir(FONTE.titulo, '.', T)) / 2;
   const by = topo + 1.02 * T;
   const bh = 1.06 * T;
   const b2 = by + 0.885 * T;
   c += '<g transform="rotate(-2 ' + num(bx + bw / 2) + ' ' + num(by + bh / 2) + ')"><rect x="' + num(bx) + '" y="' + num(by) + '" width="' + num(bw) + '" height="' + num(bh) + '" fill="' + AZUL + '"/>' +
     G.texto(FONTE.titulo, n2, bx + pad, b2, T, -0.01, 'fill="' + CREME + '"') + '</g>';
   c += G.texto(FONTE.titulo, '.', bx + bw + 2, b2, T, 0, 'fill="' + LARANJA + '"');
-  // função, bio e temas
   c += G.centro(FONTE.corpo, PERFIL.funcao, CXB, 384, 24, 0, 'fill="' + AZUL + '"');
-  quebrar(FONTE.corpo, PERFIL.bio, 19, 760).forEach((l, i) => { c += G.centro(FONTE.corpo, l, CXB, 422 + i * 29, 19, 0, 'fill="' + SUAVE + '"'); });
+  quebrar(FONTE.corpo, PERFIL.bio, 19, 780).forEach((l, i) => { c += G.centro(FONTE.corpo, l, CXB, 422 + i * 29, 19, 0, 'fill="' + SUAVE + '"'); });
   c += etiquetas(G, PERFIL.temas, CXB, 478, 13, { centro: true }).s;
-  const defs = site.definicoes('href="#i-globe" href="#i-burst" href="#i-atom"');
-  return documento(G, H, PERFIL.nome.join(' ') + ': ' + PERFIL.funcao + '. ' + PERFIL.bio, defs, c);
+  return { s: c, fim: 560 };
 }
 
-// ------------------------------------------------------------------ a galáxia de projetos com o passeio da nave
-function svgPasseio() {
-  const G = new Glifos();
-  const X = 44;
-  const TOPO = 236;
-  const K = 640 / 600;
-  const P = montarPasseio(G, site, { topoTam: 12.5, painelAlt: 470 });
-  let corpo = '';
-  corpo += sobrancelha(G, 'TRABALHOS', X, 86);
-  corpo += titulo2(G, 'A galáxia de projetos', X, 140, 40);
-  corpo += G.texto(FONTE.corpo, 'Cada sol é um tipo de trabalho e cada planeta, um projeto em órbita. A nave passa por todos.', X, 176, 18, 0, 'fill="' + SUAVE + '"');
+// ------------------------------------------------------------------ 2. qualidades: cartões como os de serviços do site
+function qualidades(G, y0) {
+  const cab = cabeca(G, y0, 'QUALIDADES', 'O que eu trago pro time', 'Teste, automação e desenvolvimento, com base de engenharia.');
+  let c = cab.s;
+  const GAP = 40;
+  const CW = (LARG - GAP) / 2;
+  const PAD = 34;
+  const TW = CW - 2 * PAD;
+  // mede cada cartão para os dois de uma linha terem a mesma altura
+  const montar = (q, i) => {
+    const t = quebrar(FONTE.titulo, q.titulo.toUpperCase(), 24, TW, -0.01);
+    const p = quebrar(FONTE.corpo, q.texto, 17, TW);
+    const itens = q.itens.map((it) => quebrar(FONTE.corpo, it, 16.5, TW - 28));
+    const h = PAD + 64 + 18 + t.length * 28 + 14 + p.length * 26 + 18 + 16 + itens.reduce((a, l) => a + l.length * 25 + 10, -10) + PAD;
+    return { q: q, i: i, t: t, p: p, itens: itens, h: h };
+  };
+  const cards = PERFIL.qualidades.map(montar);
+  let y = cab.fim + 20;
+  for (let linha = 0; linha < cards.length; linha += 2) {
+    const par = cards.slice(linha, linha + 2);
+    const h = Math.max.apply(null, par.map((k) => k.h));
+    par.forEach(function (k, j) {
+      const x = X + j * (CW + GAP);
+      c += '<rect x="' + num(x + 8) + '" y="' + num(y + 8) + '" width="' + num(CW) + '" height="' + num(h) + '" fill="' + AZUL + '"/>' +
+        '<rect x="' + num(x + 1) + '" y="' + num(y + 1) + '" width="' + num(CW - 2) + '" height="' + num(h - 2) + '" fill="' + PAPEL2 + '" stroke="' + AZUL + '" stroke-width="2"/>';
+      c += '<g color="' + AZUL + '"><use href="#' + k.q.icone + '" x="' + num(x + PAD) + '" y="' + num(y + PAD) + '" width="64" height="' + (k.q.icone === 'i-orbit' ? 28 : 64) + '"' + (k.q.icone === 'i-orbit' ? ' transform="translate(0 18)"' : '') + '/></g>';
+      const rot = (k.i < 9 ? '0' : '') + (k.i + 1) + ' / ' + k.q.rotulo.toUpperCase();
+      c += G.texto(FONTE.mono, rot, x + CW - PAD - medir(FONTE.mono, rot, 13, 0.08), y + PAD + 36, 13, 0.08, 'fill="' + AZUL + '"');
+      let yy = y + PAD + 64 + 18;
+      k.t.forEach((l) => { c += G.texto(FONTE.titulo, l, x + PAD, yy + 22, 24, -0.01, 'fill="' + AZUL + '"'); yy += 28; });
+      yy += 14;
+      k.p.forEach((l) => { c += G.texto(FONTE.corpo, l, x + PAD, yy + 18, 17, 0, 'fill="' + SUAVE + '"'); yy += 26; });
+      yy += 18;
+      c += '<path d="M' + num(x + PAD) + ' ' + num(yy) + 'H' + num(x + CW - PAD) + '" stroke="' + AZUL + '" stroke-width="1.5" stroke-dasharray="3 3"/>';
+      yy += 16;
+      k.itens.forEach(function (linhas) {
+        c += '<path fill="' + AZUL + '" transform="translate(' + num(x + PAD) + ' ' + num(yy + 4) + ')" d="' + ESTRELA4 + '"/>';
+        linhas.forEach((l) => { c += G.texto(FONTE.corpo, l, x + PAD + 28, yy + 16, 16.5, 0, 'fill="' + AZUL + '"'); yy += 25; });
+        yy += 10;
+      });
+    });
+    y += h + GAP;
+  }
+  return { s: c, fim: y + 20 };
+}
+
+// ------------------------------------------------------------------ 3. o que já fiz: a galáxia de projetos com o passeio da nave
+function projetos(G, y0, jaTem) {
+  const cab = cabeca(G, y0, 'O QUE JÁ FIZ', 'Projetos em órbita', 'Cada sol é um tipo de trabalho e cada planeta, um projeto. A nave passa por todos e o painel mostra o que foi criado.');
+  const K = 1;
+  const TOPO = cab.fim + 52;
+  const P = montarPasseio(G, site, { topoTam: 12.5, painelAlt: 470, jaTem: jaTem });
+  let c = cab.s;
   const topoH = 12.5 * 1.5 + 13;
-  corpo += '<g transform="translate(' + X + ' ' + num(TOPO - 8 - topoH) + ')">' + P.topo + '</g>';
-  corpo += '<g transform="translate(' + X + ' ' + TOPO + ') scale(' + num(K, 5) + ')">' + P.palco + '</g>';
-  const PX = X + 640 + 32;
-  corpo += '<g transform="translate(' + PX + ' ' + TOPO + ')">' + P.painel + '</g>';
-  const h = Math.max(TOPO + 400 * K + 60, TOPO + P.painelAlt) + 34;
-  const nomes = site.PROJETOS.map((p) => p.nome).join(', ');
-  return documento(G, h, 'Galáxia de projetos: uma nave passa por ' + nomes + ', e o painel mostra o que foi criado em cada um', P.defs, moldura(G, h, 'PROJETOS EM ÓRBITA') + corpo);
+  c += '<g transform="translate(' + X + ' ' + num(TOPO - 8 - topoH) + ')">' + P.topo + '</g>';
+  c += '<g transform="translate(' + X + ' ' + num(TOPO) + ') scale(' + num(K, 5) + ')">' + P.palco + '</g>';
+  c += '<g transform="translate(' + (BW - X - 528) + ' ' + num(TOPO) + ')">' + P.painel + '</g>';
+  return { s: c, defs: P.defs, fim: Math.max(TOPO + 400 * K + 60, TOPO + P.painelAlt) + 40 };
 }
 
-// ------------------------------------------------------------------ trajetória: estudos em cima, carreira embaixo
-function svgTrajetoria() {
-  const G = new Glifos();
-  const X = 44;
-  let c = '';
-  c += sobrancelha(G, 'SOBRE MIM', X, 86);
-  c += titulo2(G, 'Do teste ao código', X, 140, 40);
-  c += G.texto(FONTE.corpo, 'Comecei testando os sistemas dos outros. Hoje construo os meus, com o mesmo cuidado para não quebrar.', X, 176, 18, 0, 'fill="' + SUAVE + '"');
+// ------------------------------------------------------------------ 4. trajetória: estudos em cima, carreira embaixo
+function trajetoria(G, y0) {
+  const cab = cabeca(G, y0, 'TRAJETÓRIA', 'Da eletrônica ao teste', 'Estudos em cima, carreira embaixo. A nave percorre o caminho até hoje.');
+  let c = cab.s;
   const itens = PERFIL.trajetoria;
-  const X0 = 230;
-  const X1 = 1150;
+  const X0 = 250;
+  const X1 = 1130;
   const passo = (X1 - X0) / (itens.length - 1);
-  const YE = 292;
-  const YC = 336;
+  const YE = cab.fim + 110;
+  const YC = YE + 44;
   const pts = itens.map((it, i) => [X0 + i * passo, it.tipo === 'estudos' ? YE : YC]);
   c += G.texto(FONTE.mono, 'ESTUDOS', X, YE - 54, 12, 0.14, 'fill="' + AZUL + '"');
   c += G.texto(FONTE.mono, 'CARREIRA', X, YC + 50, 12, 0.14, 'fill="' + AZUL + '"');
-  // caminho tracejado suave passando por todos os pontos, do começo ao fim da tela
   const todos = [[X, (YE + YC) / 2]].concat(pts, [[BW - X, (YE + YC) / 2 - 10]]);
   let d = 'M' + num(todos[0][0]) + ' ' + num(todos[0][1]);
   for (let i = 0; i < todos.length - 1; i++) {
@@ -195,7 +246,6 @@ function svgTrajetoria() {
     d += 'C' + num(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + num(p1[1] + (p2[1] - p0[1]) / 6) + ' ' + num(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + num(p2[1] - (p3[1] - p1[1]) / 6) + ' ' + num(p2[0]) + ' ' + num(p2[1]);
   }
   c += '<path id="caminho" d="' + d + '" fill="none" stroke="' + AZUL + '" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>';
-  // a nave percorre a trajetória com o rastro laranja, aparecendo no começo e sumindo no fim
   const DUR = 16;
   const op = 'values="0;1;1;0" keyTimes="0;.06;.92;1" dur="' + DUR + 's" repeatCount="indefinite"';
   c += '<use href="#caminho" fill="none" stroke="' + LARANJA + '" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="90 4000" opacity="0">' +
@@ -205,11 +255,8 @@ function svgTrajetoria() {
     const cima = it.tipo === 'estudos';
     const cor = it.hoje ? LARANJA : AZUL;
     c += '<circle cx="' + num(x) + '" cy="' + y + '" r="7" fill="' + CREME + '" stroke="' + cor + '" stroke-width="2.4"/><circle cx="' + num(x) + '" cy="' + y + '" r="3" fill="' + cor + '"/>';
-    const linhas = quebrar(FONTE.corpo, it.titulo, 16, passo - 16);
-    const ano = it.ano.toUpperCase();
-    const blocos = [];
-    blocos.push({ f: FONTE.titulo, t: ano, tam: 19, esp: -0.01, cor: cor, h: 24, caixa: it.hoje });
-    linhas.forEach((l) => blocos.push({ f: FONTE.corpo, t: l, tam: 16, esp: 0, cor: AZUL, h: 20 }));
+    const blocos = [{ f: FONTE.titulo, t: it.ano.toUpperCase(), tam: 19, esp: -0.01, cor: cor, h: 24, caixa: it.hoje }];
+    quebrar(FONTE.corpo, it.titulo, 16, passo - 20).forEach((l) => blocos.push({ f: FONTE.corpo, t: l, tam: 16, esp: 0, cor: AZUL, h: 20 }));
     blocos.push({ f: FONTE.mono, t: it.onde.toUpperCase(), tam: 11.5, esp: 0.06, cor: SUAVE, h: 17 });
     const altura = blocos.reduce((a, b) => a + b.h, 0);
     let yy = cima ? y - 18 - altura : y + 22;
@@ -223,71 +270,139 @@ function svgTrajetoria() {
       yy += b.h;
     });
   });
-  const CORPO = 'M9 5h4l4-5h4l-2 6h9c6 0 11 3 14 6-3 3-8 6-14 6h-9l2 6h-4l-4-5H9z';
   c += '<g opacity="0"><animateMotion dur="' + DUR + 's" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#caminho"/></animateMotion><animate attributeName="opacity" ' + op + '/>' +
     '<g transform="scale(.95) translate(-22 -12)"><g transform="translate(9 0)"><g><animateTransform attributeName="transform" type="scale" values="1 1;.55 1" dur=".14s" calcMode="discrete" repeatCount="indefinite"/><path d="M0 8-9 12l9 4z" fill="' + LARANJA + '"/></g></g>' +
-    '<path d="' + CORPO + '" fill="' + AZUL + '"/><circle cx="31" cy="12" r="3.2" fill="' + CREME + '"/><path d="M15 9h8v6h-8z" fill="' + LARANJA + '"/></g></g>';
-  // ferramentas e certificações
-  let y = 480;
+    '<path d="' + CORPO_NAVE + '" fill="' + AZUL + '"/><circle cx="31" cy="12" r="3.2" fill="' + CREME + '"/><path d="M15 9h8v6h-8z" fill="' + LARANJA + '"/></g></g>';
+  let y = YC + 130;
   c += G.texto(FONTE.mono, 'FERRAMENTAS', X, y + 20, 12, 0.14, 'fill="' + AZUL + '"');
-  const f = etiquetas(G, PERFIL.ferramentas, X + 150, y, 12.5, { padX: 12, gap: 8 });
+  const f = etiquetas(G, PERFIL.ferramentas, X + 160, y, 12.5, { padX: 12, gap: 8 });
   c += f.s;
   y += f.h + 16;
   c += G.texto(FONTE.mono, 'CERTIFICAÇÕES', X, y + 20, 12, 0.14, 'fill="' + LARANJA + '"');
-  c += etiquetas(G, PERFIL.certificacoes, X + 150, y, 12.5, { padX: 12, gap: 8, cor: LARANJA }).s;
-  const H = y + f.h + 44;
-  const desc = PERFIL.trajetoria.map((it) => it.ano + ': ' + it.titulo + ', ' + it.onde).join('; ');
-  return documento(G, H, 'Trajetória: ' + desc + '. Ferramentas: ' + PERFIL.ferramentas.join(', ') + '. Certificações: ' + PERFIL.certificacoes.join(', '), '', moldura(G, H, 'TRAJETÓRIA') + c);
+  c += etiquetas(G, PERFIL.certificacoes, X + 160, y, 12.5, { padX: 12, gap: 8, cor: LARANJA }).s;
+  return { s: c, fim: y + f.h + 60 };
 }
 
-// ------------------------------------------------------------------ README
-function readme() {
-  const linha = (cel) => '| ' + cel.join(' | ') + ' |';
-  const projetos = [linha(['Projeto', 'O que é', 'Onde ver']), linha(['---', '---', '---'])];
-  site.SISTEMAS.forEach(function (s, i) {
-    site.projetosDe(i).forEach(function (k) {
-      const p = site.PROJETOS[k];
-      const ver = p.site ? '[' + p.site.replace(/^https?:\/\//, '') + '](' + p.site + ')' :
-        PERFIL.codigo[p.nome] ? '[código](' + PERFIL.codigo[p.nome] + ')' : '[na galáxia do site](https://www.salltech.com.br/#trabalhos)';
-      projetos.push(linha(['**' + p.nome + '**', p.categoria + ' · ' + p.cliente + ' · ' + p.ano, ver]));
-    });
+// ------------------------------------------------------------------ 5. contato: o cartão do site, o rodapé e a vaquinha
+function contato(G, y0) {
+  let c = '';
+  const x = X + 60;
+  const w = LARG - 120;
+  const y = y0 + 64;
+  const PAD = 44;
+  let yy = y + PAD;
+  let miolo = sobrancelha(G, 'CONTATO', x + PAD, yy + 13);
+  yy += 34;
+  miolo += G.texto(FONTE.titulo, 'VAMOS CONVERSAR?', x + PAD, yy + 0.885 * 46, 46, -0.01, 'fill="' + AZUL + '"');
+  yy += 46 * 1.08 + 16;
+  miolo += G.texto(FONTE.corpo, 'Aberto a conversar sobre qualidade de software, automação de testes e desenvolvimento.', x + PAD, yy + 19, 19, 0, 'fill="' + SUAVE + '"');
+  yy += 46;
+  // os contatos no desenho dos campos do formulário do site
+  const cw = (w - 2 * PAD - 20) / 2;
+  PERFIL.contatos.forEach(function (ct, i) {
+    const cx = x + PAD + i * (cw + 20);
+    miolo += G.texto(FONTE.mono, ct[0].toUpperCase(), cx, yy + 12, 12, 0.14, 'fill="' + AZUL + '"');
+    miolo += '<rect x="' + num(cx + 1) + '" y="' + num(yy + 24) + '" width="' + num(cw - 2) + '" height="52" fill="' + CREME + '" stroke="' + AZUL + '" stroke-width="2"/>';
+    miolo += G.texto(FONTE.corpo, ct[1], cx + 16, yy + 24 + 33, 18, 0, 'fill="' + AZUL + '"');
   });
-  const alt = (t) => t.replace(/"/g, '&quot;');
-  return [
-    '<img src="img/apresentacao.svg" width="100%" alt="' + alt(PERFIL.nome.join(' ') + ': ' + PERFIL.funcao + '. ' + PERFIL.bio) + '">',
-    '',
-    '<img src="img/passeio.svg" width="100%" alt="' + alt('Galáxia de projetos: uma nave passa por ' + site.PROJETOS.map((p) => p.nome).join(', ') + ', e o painel mostra o que foi criado em cada um.') + '">',
-    '',
-    '### Projetos',
-    '',
-    projetos.join('\n'),
-    '',
-    '### Testes automatizados',
-    '',
-    PERFIL.testes.map((t) => '- [' + t[0] + '](https://github.com/lfelipesal/' + t[0] + '): ' + t[1]).join('\n'),
-    '',
-    '<img src="img/trajetoria.svg" width="100%" alt="' + alt('Trajetória: ' + PERFIL.trajetoria.map((it) => it.ano + ', ' + it.titulo + ', ' + it.onde).join('; ') + '.') + '">',
-    '',
-    '### Contato',
-    '',
-    PERFIL.contatos.map((c) => '[' + c[0] + '](' + c[1] + ')').join(' · '),
-    ''
-  ].join('\n');
+  yy += 24 + 52 + 34;
+  // o serviço, discreto, no pé do cartão
+  miolo += '<path d="M' + (x + PAD) + ' ' + num(yy) + 'H' + (x + w - PAD) + '" stroke="' + AZUL + '" stroke-width="1.5" stroke-dasharray="3 3"/>';
+  yy += 30;
+  const serv = PERFIL.servicos.texto + ' · ';
+  miolo += G.texto(FONTE.corpo, serv, x + PAD, yy, 15, 0, 'fill="' + SUAVE + '"') +
+    G.texto(FONTE.corpo, PERFIL.servicos.site, x + PAD + medir(FONTE.corpo, serv, 15), yy, 15, 0, 'fill="' + AZUL + '" text-decoration="underline"');
+  yy += PAD - 10;
+  const h = yy - y;
+  c += '<rect x="' + (x + 10) + '" y="' + (y + 10) + '" width="' + w + '" height="' + num(h) + '" fill="' + AZUL + '"/>' +
+    '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="' + (w - 2) + '" height="' + num(h - 2) + '" fill="' + PAPEL2 + '" stroke="' + AZUL + '" stroke-width="2"/>' + miolo;
+  c += orbitaEnfeite('orbita-contato', x + w - 300, y - 30, 1.9);
+  c += brilho(x + w - 64, y + 150, 34, LARANJA, -0.6);
+  // rodapé: linha tracejada, assinatura com o traço do cometa e a vaquinha pastando
+  let yf = y + h + 70;
+  c += '<path d="M' + (X + 50) + ' ' + yf + 'H' + (BW - X - 50) + '" stroke="' + AZUL + '" stroke-width="1" stroke-dasharray="3 3"/>';
+  yf += 40;
+  const ass = 'LF';
+  const tam = 40;
+  const wa = medir(FONTE.titulo, ass, tam, -0.01);
+  const ax = BW / 2 - (wa + medir(FONTE.titulo, '.', tam)) / 2;
+  c += '<g transform="translate(' + num(ax - 26) + ' ' + num(yf - 30) + ')"><path d="M8 66C40 74 96 72 124 46C132 38 134 24 128 18" fill="none" stroke="' + AZUL + '" stroke-width="3" stroke-linecap="round" opacity=".75"/>' +
+    '<circle cx="128" cy="18" r="9" fill="' + AZUL + '" opacity=".25"/><circle cx="128" cy="18" r="4" fill="' + AZUL + '"/></g>';
+  c += G.texto(FONTE.titulo, ass, ax, yf + 22, tam, -0.01, 'fill="' + AZUL + '"') + G.texto(FONTE.titulo, '.', ax + wa, yf + 22, tam, 0, 'fill="' + LARANJA + '"');
+  yf += 64;
+  c += G.centro(FONTE.mono, '© 2026 ' + PERFIL.nome.join(' ').toUpperCase(), BW / 2, yf, 12.5, 0.12, 'fill="' + AZUL + '"');
+  const fim = yf + 52;
+  // a vaquinha do rodapé do site, pastando em cima da moldura
+  const k = 0.42;
+  c += '<g transform="translate(1090 ' + num(fim - 92 * k + 1) + ') scale(' + k + ')"><use href="#grama" x="6" y="76" width="24" height="17.4"/>' +
+    '<g transform="translate(83 90)"><g><animateTransform attributeName="transform" type="rotate" values="0;-3;0;0" keyTimes="0;.3;.6;1" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1;0 0 1 1"/>' +
+    '<use href="#vaca" x="-61" y="-78" width="122" height="78"/></g></g></g>';
+  return { s: c, fim: fim };
+}
+
+// ------------------------------------------------------------------ a página inteira
+function pagina() {
+  const G = new Glifos();
+  const jaTem = new Set();
+  let corpo = '';
+  let defs = site.definicoes('href="#i-globe" href="#i-burst" href="#i-atom" href="#i-orbit" href="#grama"', jaTem) + site.simbolo('vaca.svg', 'vaca');
+  const a = apresentacao(G);
+  corpo += a.s;
+  let y = a.fim;
+  corpo += faixa(1, y);
+  y += 120;
+  const q = qualidades(G, y);
+  corpo += q.s;
+  y = q.fim;
+  corpo += faixa(2, y);
+  y += 120;
+  const p = projetos(G, y, jaTem);
+  corpo += p.s;
+  defs += p.defs;
+  y = p.fim;
+  corpo += faixa(3, y);
+  y += 120;
+  const t = trajetoria(G, y);
+  corpo += t.s;
+  y = t.fim;
+  corpo += faixa(4, y);
+  y += 120;
+  const c = contato(G, y);
+  corpo += c.s;
+  const H = c.fim + M;
+  // moldura de pôster da página inteira, com a etiqueta no topo
+  const tam = 13;
+  const esp = 0.14;
+  const etq = 'PORTFÓLIO';
+  const tw = medir(FONTE.mono, etq, tam, esp);
+  const bw = tw + 48;
+  const bx = BW / 2 - bw / 2;
+  const moldura = '<rect width="' + BW + '" height="' + num(H) + '" rx="18" fill="' + CREME + '"/>' +
+    '<rect x="' + M + '" y="' + M + '" width="' + (BW - 2 * M) + '" height="' + num(H - 2 * M) + '" fill="none" stroke="' + AZUL + '" stroke-width="2"/>' +
+    '<path d="M' + num(bx) + ' ' + M + 'V' + (M + 36) + 'H' + num(bx + bw) + 'V' + M + '" fill="' + CREME + '" stroke="' + AZUL + '" stroke-width="2"/>' +
+    G.texto(FONTE.mono, etq, BW / 2 - tw / 2, M + 18 + 4.6, tam, esp, 'fill="' + AZUL + '"');
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + BW + ' ' + num(H) + '" width="' + BW + '" height="' + num(H) + '" role="img" aria-labelledby="t">' +
+    '<title id="t">' + descricao().replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</title><defs>' + G.defs() + defs + '</defs>' + moldura + corpo + '</svg>';
+}
+
+function descricao() {
+  return 'Portfólio de ' + PERFIL.nome.join(' ') + ', ' + PERFIL.funcao + '. ' + PERFIL.bio +
+    ' Qualidades: ' + PERFIL.qualidades.map((q) => q.titulo).join('; ') + '.' +
+    ' Projetos: ' + site.PROJETOS.map((p) => p.nome).join(', ') + ', numa galáxia que uma nave percorre.' +
+    ' Trajetória: ' + PERFIL.trajetoria.map((it) => it.ano + ', ' + it.titulo + ', ' + it.onde).join('; ') + '.';
+}
+
+function readme() {
+  const alt = descricao().replace(/"/g, '&quot;');
+  const contatos = PERFIL.contatos.filter((c) => c[0] !== 'GitHub').map((c) => '<a href="' + c[2] + '">' + c[0] + '</a>').join(' · ');
+  return '<img src="img/portfolio.svg" width="100%" alt="' + alt + '">\n\n' +
+    '<p align="center">' + contatos + '<br><sub>' + PERFIL.servicos.texto + ': <a href="' + PERFIL.servicos.url + '">' + PERFIL.servicos.site + '</a></sub></p>\n';
 }
 
 const IMG = path.join(PERFIL_DIR, 'img');
 fs.mkdirSync(IMG, { recursive: true });
-const so = (process.env.SO || '').split(',').filter(Boolean);
-const gerar = (nome, f) => {
-  if (so.length && !so.includes(nome)) return;
-  const s = f();
-  fs.writeFileSync(path.join(IMG, nome + '.svg'), s);
-  console.log('img/' + nome + '.svg', (s.length / 1024).toFixed(1) + ' KB');
-};
-gerar('apresentacao', svgApresentacao);
-gerar('passeio', svgPasseio);
-gerar('trajetoria', svgTrajetoria);
-if (!so.length) {
-  fs.writeFileSync(path.join(PERFIL_DIR, 'README.md'), readme());
-  console.log('README.md');
-}
+const svg = pagina();
+fs.writeFileSync(path.join(IMG, 'portfolio.svg'), svg);
+console.log('img/portfolio.svg', (svg.length / 1024).toFixed(1) + ' KB');
+fs.writeFileSync(path.join(PERFIL_DIR, 'README.md'), readme());
+console.log('README.md');
