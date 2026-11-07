@@ -1,6 +1,6 @@
 /* Gera o perfil do GitHub como uma página contínua e animada (um "PDF animado"), com a cara do site:
      img/portfolio.svg   apresentação, qualidades, o que já fiz (galáxia com o passeio da nave),
-                         trajetória e contato, separados pelas faixas líquidas do site
+                         trajetória e um rodapé discreto, separados pelas faixas líquidas do site
      README.md           a página e, embaixo, só o contato e o site dos serviços
    Os sóis, projetos, planetas, prévias de tela e enfeites vêm do site (orbit.js, index.html e img/).
    Uso, dentro desta pasta: npm i  e depois  node gerar.js [pasta-do-perfil] [pasta-do-site]
@@ -165,7 +165,7 @@ function apresentacao(G) {
 
 // ------------------------------------------------------------------ 2. qualidades: cartões como os de serviços do site
 function qualidades(G, y0) {
-  const cab = cabeca(G, y0, 'QUALIDADES', 'O que eu trago pro time', 'Teste, automação e desenvolvimento, com base de engenharia.');
+  const cab = cabeca(G, y0, 'QUALIDADES', 'O que eu faço bem', 'Teste, automação e desenvolvimento, com base de engenharia.');
   let c = cab.s;
   const GAP = 40;
   const CW = (LARG - GAP) / 2;
@@ -283,45 +283,11 @@ function trajetoria(G, y0) {
   return { s: c, fim: y + f.h + 60 };
 }
 
-// ------------------------------------------------------------------ 5. contato: o cartão do site, o rodapé e a vaquinha
-function contato(G, y0) {
+// ------------------------------------------------------------------ 5. rodapé: assinatura, o serviço bem discreto e a vaquinha
+// (sem chamada de contato: o perfil mostra quem eu sou e o que já fiz, não é procura de emprego)
+function rodape(G, y0) {
   let c = '';
-  const x = X + 60;
-  const w = LARG - 120;
-  const y = y0 + 64;
-  const PAD = 44;
-  let yy = y + PAD;
-  let miolo = sobrancelha(G, 'CONTATO', x + PAD, yy + 13);
-  yy += 34;
-  miolo += G.texto(FONTE.titulo, 'VAMOS CONVERSAR?', x + PAD, yy + 0.885 * 46, 46, -0.01, 'fill="' + AZUL + '"');
-  yy += 46 * 1.08 + 16;
-  miolo += G.texto(FONTE.corpo, 'Aberto a conversar sobre qualidade de software, automação de testes e desenvolvimento.', x + PAD, yy + 19, 19, 0, 'fill="' + SUAVE + '"');
-  yy += 46;
-  // os contatos no desenho dos campos do formulário do site
-  const cw = (w - 2 * PAD - 20) / 2;
-  PERFIL.contatos.forEach(function (ct, i) {
-    const cx = x + PAD + i * (cw + 20);
-    miolo += G.texto(FONTE.mono, ct[0].toUpperCase(), cx, yy + 12, 12, 0.14, 'fill="' + AZUL + '"');
-    miolo += '<rect x="' + num(cx + 1) + '" y="' + num(yy + 24) + '" width="' + num(cw - 2) + '" height="52" fill="' + CREME + '" stroke="' + AZUL + '" stroke-width="2"/>';
-    miolo += G.texto(FONTE.corpo, ct[1], cx + 16, yy + 24 + 33, 18, 0, 'fill="' + AZUL + '"');
-  });
-  yy += 24 + 52 + 34;
-  // o serviço, discreto, no pé do cartão
-  miolo += '<path d="M' + (x + PAD) + ' ' + num(yy) + 'H' + (x + w - PAD) + '" stroke="' + AZUL + '" stroke-width="1.5" stroke-dasharray="3 3"/>';
-  yy += 30;
-  const serv = PERFIL.servicos.texto + ' · ';
-  miolo += G.texto(FONTE.corpo, serv, x + PAD, yy, 15, 0, 'fill="' + SUAVE + '"') +
-    G.texto(FONTE.corpo, PERFIL.servicos.site, x + PAD + medir(FONTE.corpo, serv, 15), yy, 15, 0, 'fill="' + AZUL + '" text-decoration="underline"');
-  yy += PAD - 10;
-  const h = yy - y;
-  c += '<rect x="' + (x + 10) + '" y="' + (y + 10) + '" width="' + w + '" height="' + num(h) + '" fill="' + AZUL + '"/>' +
-    '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="' + (w - 2) + '" height="' + num(h - 2) + '" fill="' + PAPEL2 + '" stroke="' + AZUL + '" stroke-width="2"/>' + miolo;
-  c += orbitaEnfeite('orbita-contato', x + w - 300, y - 30, 1.9);
-  c += brilho(x + w - 64, y + 150, 34, LARANJA, -0.6);
-  // rodapé: linha tracejada, assinatura com o traço do cometa e a vaquinha pastando
-  let yf = y + h + 70;
-  c += '<path d="M' + (X + 50) + ' ' + yf + 'H' + (BW - X - 50) + '" stroke="' + AZUL + '" stroke-width="1" stroke-dasharray="3 3"/>';
-  yf += 40;
+  let yf = y0 + 76;
   const ass = 'LF';
   const tam = 40;
   const wa = medir(FONTE.titulo, ass, tam, -0.01);
@@ -330,6 +296,11 @@ function contato(G, y0) {
     '<circle cx="128" cy="18" r="9" fill="' + AZUL + '" opacity=".25"/><circle cx="128" cy="18" r="4" fill="' + AZUL + '"/></g>';
   c += G.texto(FONTE.titulo, ass, ax, yf + 22, tam, -0.01, 'fill="' + AZUL + '"') + G.texto(FONTE.titulo, '.', ax + wa, yf + 22, tam, 0, 'fill="' + LARANJA + '"');
   yf += 64;
+  const serv = PERFIL.servicos.texto + ' · ';
+  const ws = medir(FONTE.corpo, serv + PERFIL.servicos.site, 14);
+  c += G.texto(FONTE.corpo, serv, BW / 2 - ws / 2, yf, 14, 0, 'fill="' + SUAVE + '"') +
+    G.texto(FONTE.corpo, PERFIL.servicos.site, BW / 2 - ws / 2 + medir(FONTE.corpo, serv, 14), yf, 14, 0, 'fill="' + AZUL + '" text-decoration="underline"');
+  yf += 30;
   c += G.centro(FONTE.mono, '© 2026 ' + PERFIL.nome.join(' ').toUpperCase(), BW / 2, yf, 12.5, 0.12, 'fill="' + AZUL + '"');
   const fim = yf + 52;
   // a vaquinha do rodapé do site, pastando em cima da moldura
@@ -367,7 +338,7 @@ function pagina() {
   y = t.fim;
   corpo += faixa(4, y);
   y += 120;
-  const c = contato(G, y);
+  const c = rodape(G, y);
   corpo += c.s;
   const H = c.fim + M;
   // moldura de pôster da página inteira, com a etiqueta no topo
