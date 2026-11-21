@@ -352,6 +352,137 @@ function pagina() {
     '<title id="t">' + descricao().replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</title><defs>' + G.defs() + defs + '</defs>' + moldura + corpo + '</svg>';
 }
 
+// ------------------------------------------------------------------ versão numa tela só: mosaico sem rolagem
+// Esquerda: apresentação e os pontos fortes em quadros pequenos. Direita: a galáxia com o passeio da nave e, embaixo
+// dela, uma etiqueta com o projeto da vez. Faixa de baixo: a trajetória e as ferramentas.
+function paginaCompacta() {
+  const G = new Glifos();
+  const jaTem = new Set();
+  let defs = site.definicoes('href="#i-globe" href="#i-burst" href="#i-atom" href="#i-orbit" href="#grama"', jaTem) + site.simbolo('vaca.svg', 'vaca');
+  let c = '';
+  const ESQ = 56;
+  const LE = 590; // largura da coluna da esquerda
+  // apresentação
+  c += sobrancelha(G, 'OI, EU SOU O', ESQ, 96);
+  const T = 58;
+  const topo = 108;
+  c += G.texto(FONTE.titulo, PERFIL.nome[0].toUpperCase(), ESQ, topo + 0.885 * T, T, -0.01, 'fill="' + AZUL + '"');
+  const n2 = PERFIL.nome[1].toUpperCase();
+  const pad = 0.18 * T;
+  const bw = medir(FONTE.titulo, n2, T, -0.01) + 2 * pad;
+  const by = topo + 1.02 * T;
+  const bh = 1.06 * T;
+  const b2 = by + 0.885 * T;
+  c += '<g transform="rotate(-2 ' + num(ESQ + bw / 2) + ' ' + num(by + bh / 2) + ')"><rect x="' + ESQ + '" y="' + num(by) + '" width="' + num(bw) + '" height="' + num(bh) + '" fill="' + AZUL + '"/>' +
+    G.texto(FONTE.titulo, n2, ESQ + pad, b2, T, -0.01, 'fill="' + CREME + '"') + '</g>';
+  c += G.texto(FONTE.titulo, '.', ESQ + bw + 2, b2, T, 0, 'fill="' + LARANJA + '"');
+  c += G.texto(FONTE.corpo, PERFIL.funcao, ESQ, 262, 20, 0, 'fill="' + AZUL + '"');
+  quebrar(FONTE.corpo, PERFIL.bio, 16.5, LE).forEach((l, i) => { c += G.texto(FONTE.corpo, l, ESQ, 294 + i * 24, 16.5, 0, 'fill="' + SUAVE + '"'); });
+  // enfeites do herói, poucos e nos cantos
+  c += '<g transform="translate(600 104)" color="' + AZUL + '"><g>' + girar(40) + '<use href="#i-globe" x="-34" y="-34" width="68" height="68"/></g></g>';
+  c += brilho(640, 196, 30, LARANJA, -1.2);
+  // pontos fortes em quadros 2 x 2
+  c += sobrancelha(G, 'PONTOS FORTES', ESQ, 378);
+  const GAPQ = 18;
+  const QW = (LE + 30 - GAPQ) / 2;
+  const QH = 92;
+  PERFIL.qualidades.forEach(function (q, i) {
+    const x = ESQ + (i % 2) * (QW + GAPQ);
+    const y = 394 + Math.floor(i / 2) * (QH + GAPQ);
+    c += '<rect x="' + num(x + 5) + '" y="' + num(y + 5) + '" width="' + num(QW) + '" height="' + QH + '" fill="' + AZUL + '"/>' +
+      '<rect x="' + num(x + 1) + '" y="' + num(y + 1) + '" width="' + num(QW - 2) + '" height="' + (QH - 2) + '" fill="' + PAPEL2 + '" stroke="' + AZUL + '" stroke-width="2"/>';
+    const orb = q.icone === 'i-orbit';
+    c += '<g color="' + AZUL + '"><use href="#' + q.icone + '" x="' + num(x + 16) + '" y="' + num(y + (orb ? 26 : 16)) + '" width="40" height="' + (orb ? 18 : 40) + '"/></g>';
+    const rot = (i < 9 ? '0' : '') + (i + 1) + ' / ' + q.rotulo.toUpperCase();
+    c += G.texto(FONTE.mono, rot, x + 68, y + 28, 11, 0.08, 'fill="' + AZUL + '"');
+    const linhas = [].concat(...q.titulo.toUpperCase().split('\n').map((l) => quebrar(FONTE.titulo, l, 15, QW - 84, -0.01)));
+    linhas.slice(0, 2).forEach((l, j) => { c += G.texto(FONTE.titulo, l, x + 68, y + 52 + j * 19, 15, -0.01, 'fill="' + AZUL + '"'); });
+  });
+  // a galáxia com o passeio, e a etiqueta do projeto da vez
+  const DX = 702;
+  const K = 0.9;
+  const TOPO = 108;
+  const ET_W = 600 * K;
+  const etiqueta = function (id) {
+    const p = id >= 0 ? site.PROJETOS[id] : null;
+    const cor = p && site.quente(p) ? LARANJA : AZUL;
+    const n = (v) => (v < 9 ? '0' : '') + (v + 1);
+    const nome = p ? p.nome.toUpperCase() : site.PROJETOS.length + ' PROJETOS EM ÓRBITA';
+    const sub = p ? (p.categoria + ' · ' + p.ano).toUpperCase() : 'A NAVE PASSA POR TODOS';
+    const cont = p ? n(id) + ' / ' + n(site.PROJETOS.length - 1) : '';
+    let s = '<rect x="5" y="5" width="' + num(ET_W) + '" height="64" fill="' + cor + '"/><rect x="1" y="1" width="' + num(ET_W - 2) + '" height="62" fill="' + PAPEL2 + '" stroke="' + cor + '" stroke-width="2"/>';
+    let t = 21;
+    while (t > 14 && medir(FONTE.titulo, nome, t, -0.01) > ET_W - 110) t -= 0.5;
+    s += G.texto(FONTE.titulo, nome, 18, 30, t, -0.01, 'fill="' + cor + '"');
+    s += G.texto(FONTE.mono, sub, 18, 50, 11.5, 0.08, 'fill="' + cor + '"');
+    if (cont) s += G.texto(FONTE.titulo, cont, ET_W - 18 - medir(FONTE.titulo, cont, 15), 40, 15, 0, 'fill="' + cor + '"');
+    return { s: s, h: 64, cor: cor };
+  };
+  const P = montarPasseio(G, site, { topoTam: 12, painelAlt: 64, jaTem: jaTem, etiqueta: etiqueta });
+  defs += P.defs;
+  c += '<g transform="translate(' + DX + ' ' + (TOPO - 36) + ')">' + P.topo + '</g>';
+  c += '<g transform="translate(' + DX + ' ' + TOPO + ') scale(' + K + ')">' + P.palco + '</g>';
+  c += '<g transform="translate(' + DX + ' ' + num(TOPO + 400 * K + 14) + ')">' + P.painel + '</g>';
+  // faixa de baixo: trajetória numa linha só, com a nave, e as ferramentas
+  const YT = 660;
+  c += '<path d="M' + M + ' ' + (YT - 62) + 'H' + (BW - M) + '" stroke="' + AZUL + '" stroke-width="2"/>';
+  c += sobrancelha(G, 'TRAJETÓRIA', ESQ, YT - 30);
+  const itens = PERFIL.trajetoria;
+  const X0 = 300;
+  const X1 = 1150;
+  const passo = (X1 - X0) / (itens.length - 1);
+  const pts = itens.map((it, i) => [X0 + i * passo, YT + (i % 2 ? 6 : -6)]);
+  const todos = [[ESQ + 150, YT]].concat(pts, [[BW - M - 20, YT - 8]]);
+  let d = 'M' + num(todos[0][0]) + ' ' + num(todos[0][1]);
+  for (let i = 0; i < todos.length - 1; i++) {
+    const p0 = todos[Math.max(0, i - 1)];
+    const p1 = todos[i];
+    const p2 = todos[i + 1];
+    const p3 = todos[Math.min(todos.length - 1, i + 2)];
+    d += 'C' + num(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + num(p1[1] + (p2[1] - p0[1]) / 6) + ' ' + num(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + num(p2[1] - (p3[1] - p1[1]) / 6) + ' ' + num(p2[0]) + ' ' + num(p2[1]);
+  }
+  c += '<path id="caminho" d="' + d + '" fill="none" stroke="' + AZUL + '" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>';
+  const DUR = 14;
+  const op = 'values="0;1;1;0" keyTimes="0;.06;.92;1" dur="' + DUR + 's" repeatCount="indefinite"';
+  c += '<use href="#caminho" fill="none" stroke="' + LARANJA + '" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="80 4000" opacity="0">' +
+    '<animate attributeName="stroke-dashoffset" values="80;-1100" dur="' + DUR + 's" repeatCount="indefinite"/><animate attributeName="opacity" ' + op + '/></use>';
+  itens.forEach(function (it, i) {
+    const [x, y] = pts[i];
+    const cor = it.hoje ? LARANJA : AZUL;
+    c += '<circle cx="' + num(x) + '" cy="' + num(y) + '" r="6" fill="' + CREME + '" stroke="' + cor + '" stroke-width="2.2"/><circle cx="' + num(x) + '" cy="' + num(y) + '" r="2.6" fill="' + cor + '"/>';
+    const ano = it.ano.toUpperCase();
+    if (it.hoje) {
+      const w = medir(FONTE.titulo, ano, 15, -0.01) + 14;
+      c += '<rect x="' + num(x - w / 2) + '" y="' + num(y - 38) + '" width="' + num(w) + '" height="22" fill="' + LARANJA + '" transform="rotate(-2 ' + num(x) + ' ' + num(y - 27) + ')"/>';
+      c += G.centro(FONTE.titulo, ano, x, y - 21, 15, -0.01, 'fill="' + CREME + '"');
+    } else c += G.centro(FONTE.titulo, ano, x, y - 20, 15, -0.01, 'fill="' + cor + '"');
+    c += G.centro(FONTE.corpo, it.titulo, x, y + 30, 14, 0, 'fill="' + AZUL + '"');
+    c += G.centro(FONTE.mono, it.onde.toUpperCase(), x, y + 47, 10.5, 0.06, 'fill="' + SUAVE + '"');
+  });
+  c += '<g opacity="0"><animateMotion dur="' + DUR + 's" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#caminho"/></animateMotion><animate attributeName="opacity" ' + op + '/>' +
+    '<g transform="scale(.8) translate(-22 -12)"><g transform="translate(9 0)"><g><animateTransform attributeName="transform" type="scale" values="1 1;.55 1" dur=".14s" calcMode="discrete" repeatCount="indefinite"/><path d="M0 8-9 12l9 4z" fill="' + LARANJA + '"/></g></g>' +
+    '<path d="' + CORPO_NAVE + '" fill="' + AZUL + '"/><circle cx="31" cy="12" r="3.2" fill="' + CREME + '"/><path d="M15 9h8v6h-8z" fill="' + LARANJA + '"/></g></g>';
+  const yf = YT + 76;
+  c += etiquetas(G, PERFIL.ferramentas.concat(PERFIL.certificacoes), ESQ, yf, 11, { padX: 9, gap: 6 }).s;
+  const H = yf + 52;
+  // a vaquinha pastando em cima da moldura
+  const k = 0.36;
+  c += '<g transform="translate(1150 ' + num(H - M - 92 * k + 1) + ') scale(' + k + ')"><use href="#grama" x="6" y="76" width="24" height="17.4"/>' +
+    '<g transform="translate(83 90)"><g><animateTransform attributeName="transform" type="rotate" values="0;-3;0;0" keyTimes="0;.3;.6;1" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1;0 0 1 1"/>' +
+    '<use href="#vaca" x="-61" y="-78" width="122" height="78"/></g></g></g>';
+  const tam = 13;
+  const esp = 0.14;
+  const etq = 'PORTFÓLIO';
+  const tw = medir(FONTE.mono, etq, tam, esp);
+  const bx = BW / 2 - (tw + 48) / 2;
+  const moldura = '<rect width="' + BW + '" height="' + num(H) + '" rx="18" fill="' + CREME + '"/>' +
+    '<rect x="' + M + '" y="' + M + '" width="' + (BW - 2 * M) + '" height="' + num(H - 2 * M) + '" fill="none" stroke="' + AZUL + '" stroke-width="2"/>' +
+    '<path d="M' + num(bx) + ' ' + M + 'V' + (M + 36) + 'H' + num(bx + tw + 48) + 'V' + M + '" fill="' + CREME + '" stroke="' + AZUL + '" stroke-width="2"/>' +
+    G.texto(FONTE.mono, etq, BW / 2 - tw / 2, M + 18 + 4.6, tam, esp, 'fill="' + AZUL + '"');
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + BW + ' ' + num(H) + '" width="' + BW + '" height="' + num(H) + '" role="img" aria-labelledby="t">' +
+    '<title id="t">' + descricao().replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</title><defs>' + G.defs() + defs + '</defs>' + moldura + c + '</svg>';
+}
+
 function descricao() {
   return 'Portfólio de ' + PERFIL.nome.join(' ') + ', ' + PERFIL.funcao + '. ' + PERFIL.bio +
     ' Pontos fortes: ' + PERFIL.qualidades.map((q) => q.titulo.replace(/\n/g, ' ')).join('; ') + '.' +
@@ -370,7 +501,8 @@ function readme() {
 
 const IMG = path.join(PERFIL_DIR, 'img');
 fs.mkdirSync(IMG, { recursive: true });
-const svg = pagina();
+// a versão numa tela só é a do perfil; LONGA=1 gera a página contínua com todas as seções
+const svg = process.env.LONGA ? pagina() : paginaCompacta();
 fs.writeFileSync(path.join(IMG, 'portfolio.svg'), svg);
 console.log('img/portfolio.svg', (svg.length / 1024).toFixed(1) + ' KB');
 fs.writeFileSync(path.join(PERFIL_DIR, 'README.md'), readme());

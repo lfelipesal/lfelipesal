@@ -595,8 +595,11 @@ function montarPasseio(G, site, layout) {
   topo += '</g>';
 
   // ---------- painel: o mapa na galáxia e cada projeto quando a nave pousa nele
-  const estadosPainel = [{ id: -1, p: painelMapa(G, site, layout.painelAlt) }];
-  site.PROJETOS.forEach((p, k) => estadosPainel.push({ id: k, p: painelProjeto(G, site, k, site.PROJETOS.length, layout.painelAlt) }));
+  // layout.etiqueta(id) troca o painel grande por uma etiqueta curta (versão que cabe numa tela só)
+  const estadoDe = (id) => layout.etiqueta ? layout.etiqueta(id) :
+    id < 0 ? painelMapa(G, site, layout.painelAlt) : painelProjeto(G, site, id, site.PROJETOS.length, layout.painelAlt);
+  const estadosPainel = [{ id: -1, p: estadoDe(-1) }];
+  site.PROJETOS.forEach((p, k) => estadosPainel.push({ id: k, p: estadoDe(k) }));
   const alt = Math.max.apply(null, estadosPainel.map((e) => e.p.h));
   let painel = '';
   estadosPainel.forEach(function (e) {
@@ -613,7 +616,7 @@ function montarPasseio(G, site, layout) {
     });
     // na volta do laço, o mapa já está aberto
     painel += '<g opacity="0" display="none">' + ligado(nv, (v) => v[0] > 0) + animar('opacity', nv.map((q) => ({ t: q.t, v: [q.v[0]] })), L, (v) => num(v[0], 2), 0.01) +
-      '<g>' + transformar('translate', nv.map((q) => ({ t: q.t, v: [0, q.v[1]] })), L, V, 0.05) + moldura(alt, e.p.cor) + e.p.s + '</g></g>';
+      '<g>' + transformar('translate', nv.map((q) => ({ t: q.t, v: [0, q.v[1]] })), L, V, 0.05) + (layout.etiqueta ? '' : moldura(alt, e.p.cor)) + e.p.s + '</g></g>';
   });
 
   return { L: L, defs: defs + defsRastro + defsPlanetas, palco: palco, topo: topo, painel: painel, painelAlt: alt + 8, roteiro: R };
