@@ -118,15 +118,16 @@ function orbitaEnfeite(id, x, y, k) {
     '<circle r="' + num(4.5 / k, 2) + '" fill="' + LARANJA + '"><animateMotion dur="14s" begin="-7s" repeatCount="indefinite"><mpath href="#' + id + '"/></animateMotion></circle></g></g>';
 }
 // faixa líquida do site entre as seções, de borda a borda da moldura
-function faixa(n, y) {
+function faixa(n, y, alt) {
+  alt = alt || 120;
   const arq = fs.readFileSync(path.join(SITE, 'img', 'faixa-' + n + '.svg'), 'utf8');
   const vb = arq.match(/viewBox="([^"]+)"/)[1];
   const par = (arq.match(/preserveAspectRatio="([^"]+)"/) || [0, 'xMidYMid slice'])[1];
   const miolo = arq.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
   const x0 = M + 1;
   const w = BW - 2 * M - 2;
-  return '<svg x="' + x0 + '" y="' + y + '" width="' + w + '" height="120" viewBox="' + vb + '" preserveAspectRatio="' + par + '">' + miolo + '</svg>' +
-    '<path d="M' + M + ' ' + (y + 1) + 'H' + (BW - M) + 'M' + M + ' ' + (y + 119) + 'H' + (BW - M) + '" stroke="' + AZUL + '" stroke-width="2"/>';
+  return '<svg x="' + x0 + '" y="' + y + '" width="' + w + '" height="' + alt + '" viewBox="' + vb + '" preserveAspectRatio="' + par + '">' + miolo + '</svg>' +
+    '<path d="M' + M + ' ' + (y + 1) + 'H' + (BW - M) + 'M' + M + ' ' + (y + alt - 1) + 'H' + (BW - M) + '" stroke="' + AZUL + '" stroke-width="2"/>';
 }
 
 // ------------------------------------------------------------------ 1. apresentação: a abertura do site, com o meu nome
@@ -383,9 +384,9 @@ function paginaCompacta() {
   c += brilho(640, 196, 30, LARANJA, -1.2);
   // pontos fortes em quadros 2 x 2
   c += sobrancelha(G, 'PONTOS FORTES', ESQ, 378);
-  const GAPQ = 18;
+  const GAPQ = 14;
   const QW = (LE + 30 - GAPQ) / 2;
-  const QH = 92;
+  const QH = 84;
   PERFIL.qualidades.forEach(function (q, i) {
     const x = ESQ + (i % 2) * (QW + GAPQ);
     const y = 394 + Math.floor(i / 2) * (QH + GAPQ);
@@ -424,8 +425,8 @@ function paginaCompacta() {
   c += '<g transform="translate(' + DX + ' ' + TOPO + ') scale(' + K + ')">' + P.palco + '</g>';
   c += '<g transform="translate(' + DX + ' ' + num(TOPO + 400 * K + 14) + ')">' + P.painel + '</g>';
   // faixa de baixo: trajetória numa linha só, com a nave, e as ferramentas
-  const YT = 660;
-  c += '<path d="M' + M + ' ' + (YT - 62) + 'H' + (BW - M) + '" stroke="' + AZUL + '" stroke-width="2"/>';
+  const YT = 712;
+  c += faixa(2, YT - 106, 42);
   c += sobrancelha(G, 'TRAJETÓRIA', ESQ, YT - 30);
   const itens = PERFIL.trajetoria;
   const X0 = 300;
